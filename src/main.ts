@@ -6,6 +6,7 @@ import fragmentShader from "./shaders/fragment.glsl?raw";
 
 const canvas = document.querySelector("canvas.webgl") as HTMLCanvasElement;
 
+// シーン
 const scene = new THREE.Scene();
 
 scene.background = new THREE.Color(0x111111);
@@ -25,16 +26,10 @@ let particles: {
 const loader = new GLTFLoader();
 
 loader.load("src/models/xmastree.glb", (gltf) => {
-    console.log(
-        (gltf.scene.children[0] as THREE.Mesh).geometry.attributes.position
-    );
-
     const position = (gltf.scene.children[0] as THREE.Mesh).geometry.attributes
         .position;
 
     const treePosition = new THREE.BufferAttribute(position.array, 3);
-
-    console.log(treePosition);
 
     particles = {
         geometry: new THREE.BufferGeometry(),
@@ -66,23 +61,20 @@ loader.load("src/models/xmastree.glb", (gltf) => {
 });
 
 window.addEventListener("resize", () => {
-    // Update sizes
+    // サイズの更新
     sizes.width = window.innerWidth;
     sizes.height = window.innerHeight;
 
-    // Update camera
+    // カメラの更新
     camera.aspect = sizes.width / sizes.height;
     camera.updateProjectionMatrix();
 
-    // Update renderer
+    // レンダラーの更新
     renderer.setSize(sizes.width, sizes.height);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 });
 
-/**
- * Camera
- */
-// Base camera
+// カメラ
 const camera = new THREE.PerspectiveCamera(
     75,
     sizes.width / sizes.height,
@@ -92,23 +84,18 @@ const camera = new THREE.PerspectiveCamera(
 camera.position.set(0, 0, 8 * 2);
 scene.add(camera);
 
-// Controls
+// 操作系
 const controls = new OrbitControls(camera, canvas);
 controls.enableDamping = true;
 
-/**
- * Renderer
- */
+// レンダラー
 const renderer = new THREE.WebGLRenderer({
     canvas: canvas,
 });
 renderer.setSize(sizes.width, sizes.height);
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
-/**
- * Animate
- */
-
+// アニメーション
 const tick = () => {
     // Update controls
     controls.update();
